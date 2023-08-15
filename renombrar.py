@@ -15,12 +15,13 @@ def rename_pdf_files(folder_path):
         if filename.lower().endswith('.pdf'):
             pdf_path = os.path.join(folder_path, filename)
             extracted_text = extract_info_from_pdf(pdf_path).split('\n', 1)[0]
-            resultado = re.search(r"Fecha\s*:\s*(\d{2}/\d{2}/\d{4})\s*-.*Paciente\s*:\s*([A-Za-záéíóúÁÉÍÓÚñÑ\s]+)", extracted_text)
+            resultado = re.search(r"Fecha\s*:\s*([\d/]+)\s*-\s*Nro\. Entrada:\s*(\d+)\s*Medico\s*:\s*\w+\s*Paciente:\s*([\w\s]+)", extracted_text)
 
             if resultado:
                 fecha = resultado.group(1).replace('/','-')
-                paciente = resultado.group(2)
-                new_name = (f"{fecha}_{paciente}.pdf")
+                orden = resultado.group(2)
+                paciente = resultado.group(3)
+                new_name = (f"{fecha}_{orden}_{paciente}.pdf")
                 new_path = os.path.join(folder_path, new_name)
                 os.rename(pdf_path, new_path)
                 print(f"Cambio nombre {filename} a {new_name}")
